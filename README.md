@@ -28,6 +28,7 @@ consist of various type of question(likert style, open ended, binary etc.) </br>
 
 
 ### Response: 
+![ImageResponse](Images/homereliable.png)
  These were our key findings: 
  1. Our assumption that their is wifi issue to connect to internet on campus exits 96.1% of our responded they have had faced issue connect to internet and wifi.
  2. Motivation and engagement with course content: 51% student responded to be engaged with the course content.
@@ -38,5 +39,6 @@ consist of various type of question(likert style, open ended, binary etc.) </br>
  We were able to reject the null hypothesis and found out statistically significant response that their is correlation between campus wifi and
  student's motivation and engagement.
  
- Below was the word cloud of student's major responses:
- [!responseWordCloud](Images/ResponseWordCloud.jpg)
+ Below was the word cloud of student's major responses:</br>
+ <img src='Images/ResponseWordCloud.jpg' width="500">
+
