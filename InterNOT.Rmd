@@ -1,0 +1,196 @@
+---
+title: "Lab 1"
+author: "Team A"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+#### Question 5
+
+Please answer all questions in the pdf lab write-up. Your .Rmd file should only contain code and output. Make sure you answer the sub-questions (b, c, d, e, and f) in your lab write-up. 
+
+##### 5a. Load your dataset into R as a dataframe.
+```{r}
+
+df <- read.csv("[Group 4]InterNOT.csv")
+
+#Renaming the column names to $-accessible handles
+colnames(df) <- c('ts','q1',	'q2',	'q3',	'q4',	'q5',	'q6',	'q7',	'q8',	'q9',	'q10')
+
+###Converting the string values to likert numericals in l1..l5
+###Normalizing the values in A1..A5
+#A1
+temp <- c("Very Engaged", "Engaged", "Neither engaged nor disengaged", "Disengaged", "Very disengaged")
+likert <- 1:length(temp)
+names(likert)<-temp
+df$l1<-likert[df$q1]
+df$A1<-df$l1/length(temp) * 5
+#A2
+temp <- c("Very frequently","Frequently","Occasionally","Rarely","Very rarely","Never")
+likert <- 1:length(temp)
+names(likert)<-temp
+df$l2<-likert[df$q2]
+df$A2<-df$l2/length(temp) * 5
+#A3
+temp <- c("Complete all of the readings on time", 
+          "Complete more than half of the readings",
+          "Complete less than half of the readings",
+          "Did not do any of the readings")
+likert <- 1:length(temp)
+names(likert)<-temp
+df$l3<-likert[df$q3]
+df$A3<-df$l3/length(temp) * 5
+#A4
+temp <- c("Read all of the readings in detail and researched more about them",
+          "Read all of the readings in detail",
+          "Read almost every section",
+          "Skimmed through the readings",
+          "Did not do any of the readings")
+likert <- 1:length(temp)
+names(likert)<-temp
+df$l4<-likert[df$q4]
+df$A4<-df$l4/length(temp) * 5
+#A5
+temp <- c("Strongly agree","Agree","Neither agree nor disagree","Disagree","Strongly disagree")
+likert <- 1:length(temp)
+names(likert)<-temp
+df$l5<-likert[df$q7]
+df$A5<-df$l5/length(temp) * 5
+
+#df[c('l1', 'l2', 'l3', 'l4', 'l5', 'A1', 'A2', 'A3', 'A4', 'A5')]
+sum(is.na(df))
+```
+
+
+```{r}
+#install.packages("psych")
+library("psych")
+
+#head(bfi)
+#?bfi
+#str(bfi)
+
+head(df)
+str(df)
+```
+
+##### 5b. Compute the average inter-tem correlations for each item.
+
+Step 1: 
+
+```{r}
+
+## We don't have missing values. All our questions were mandatory.
+
+# Creating a new dataframe containing only those variables
+#scale_df = bfi[, c("A1","A2", "A3", "A4", "A5")]
+scale_df = df[, c("A1","A2", "A3", "A4")]
+
+# [Error Check] Check the class of your variables
+str(scale_df)
+
+# [Error Check] Check you have encoded the missing values correctly
+table(scale_df$A1)
+table(scale_df$A2)
+table(scale_df$A3)
+table(scale_df$A4)
+```
+Step 2: Flip any variables that are reverse-coded. 
+```{r}
+
+## WE DO NOT HAVE ANY REVERSE-CODED QUESTIONS
+
+### car was not installed before
+#install.packages("car")
+library(car)
+
+# Reverse-coding A1
+
+# The following is a quicker way to do multiple recodes using a specialized recode function. 
+
+# You can also use the method we outline in the R tutorial and class session using indexing. 
+#scale_df$recode_A1 = car::recode(scale_df$A1, "1=6; 2=5; 3=4; 4=3; 5=2; 6=1")
+
+# [Error Check] Check the recode has been done correctly
+#head(scale_df[, c("A1", "recode_A1")], 10)
+
+```
+
+Step 3: Run the correlation matrix.  
+```{r}
+scale_df2 = scale_df[, c("A1", "A2", "A3", "A4")]
+cor(x=scale_df2, use = "pairwise.complete.obs")
+```
+
+Step 4: Compute the average inter-item correlation for each item.
+
+```{r}
+# You can assign the output of the cor function to a variable 
+corr_matrix = cor(x=scale_df2, use = "pairwise.complete.obs")
+
+# [Error check] Check the class of the function output (is a matrix). 
+class(corr_matrix)
+
+# Similar to dataframes, you can select the elements you want from the matrix, and feed it into the mean function to get your average inter-item correlation 
+
+# Make sure you exclude the correlation of the variable with itself, as you select the elements to compute each inter-item correlation. 
+
+A1_corrs = corr_matrix[1 , c(2,3,4)]
+
+# [Error check] Double-check to make sure you've selected the elements of each matrix correctly. 
+A1_corrs
+corr_matrix
+
+# [Error check]
+is.vector(A1_corrs)
+class(A1_corrs)
+
+average_A1_corrs = mean(A1_corrs)
+average_A1_corrs
+## The inter-item correlation is 0.43 which is above 0.2 (yay!)
+```
+
+```{r}
+#We did mean of inter-item correlation of each question.
+mean(corr_matrix[1 , c(2,3,4)])
+mean(corr_matrix[2 , c(1,3,4)])
+mean(corr_matrix[3 , c(1,2,4)])
+mean(corr_matrix[4 , c(1,2,3)])
+```
+
+##### 5c. Answer this (and all questions/sub-questions) in your lab write-up. 
+
+##### 5d. Calculate Cronbach’s alpha for your set of likert-style variables. 
+
+```{r}
+psych::alpha(scale_df2[, c("A1", "A2", "A3", "A4")], check.keys=TRUE)
+
+##Our raw alpha value is 0.76
+```
+
+We get a (raw_alpha) value of 0.76 in our data. 
+
+##### 5e.	Create a new scale which is the average of your likert-style variables. 
+
+```{r}
+library(car)
+# Get the row mean of A1-A5. 
+# The column index argument is unnecessary (since scale_df2 only has those 4 columns) but included for clarity. 
+scale_df2$scale = rowMeans(scale_df2[, c("A1", "A2", "A3", "A4")], na.rm=TRUE)
+
+# [Error check] Make sure the function does as expected - checking rows with NA values in particular. 
+tail(scale_df2, 50)
+```
+
+##### 5f. Plot a histogram for each of your likert-style variables, and a histogram for your new scale (the average of your likert-style variables). Include these histograms in your lab pdf write-up, and briefly discuss and interpret any notable differences between the individual histograms and the histogram of your new scale.  
+
+```{r}
+hist(scale_df2$A1)
+hist(scale_df2$A2)
+hist(scale_df2$A3)
+hist(scale_df2$A4)
+
+# Increasing the number of breaks allows you to see more of the granularity in your new scale variable.  
+hist(scale_df2$scale, breaks=24)
+```
