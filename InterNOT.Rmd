@@ -1,16 +1,7 @@
----
-title: "Lab 1"
-author: "Team A"
-output:
-  pdf_document: default
-  html_document: default
----
 
-#### Question 5
+ 
 
-Please answer all questions in the pdf lab write-up. Your .Rmd file should only contain code and output. Make sure you answer the sub-questions (b, c, d, e, and f) in your lab write-up. 
-
-##### 5a. Load your dataset into R as a dataframe.
+Load the dataset into R as a dataframe.
 ```{r}
 
 df <- read.csv("[Group 4]InterNOT.csv")
@@ -75,7 +66,7 @@ head(df)
 str(df)
 ```
 
-##### 5b. Compute the average inter-tem correlations for each item.
+Computing the average inter-item correlations for each item.
 
 Step 1: 
 
@@ -96,7 +87,7 @@ table(scale_df$A2)
 table(scale_df$A3)
 table(scale_df$A4)
 ```
-Step 2: Flip any variables that are reverse-coded. 
+Step 2: Flipping any variables that are reverse-coded. 
 ```{r}
 
 ## WE DO NOT HAVE ANY REVERSE-CODED QUESTIONS
@@ -117,13 +108,13 @@ library(car)
 
 ```
 
-Step 3: Run the correlation matrix.  
+Step 3: Running the correlation matrix.  
 ```{r}
 scale_df2 = scale_df[, c("A1", "A2", "A3", "A4")]
 cor(x=scale_df2, use = "pairwise.complete.obs")
 ```
 
-Step 4: Compute the average inter-item correlation for each item.
+Step 4: Computing the average inter-item correlation for each item.
 
 ```{r}
 # You can assign the output of the cor function to a variable 
@@ -159,9 +150,9 @@ mean(corr_matrix[3 , c(1,2,4)])
 mean(corr_matrix[4 , c(1,2,3)])
 ```
 
-##### 5c. Answer this (and all questions/sub-questions) in your lab write-up. 
 
-##### 5d. Calculate Cronbach’s alpha for your set of likert-style variables. 
+
+##### Calculating Cronbach’s alpha for your set of likert-style variables. 
 
 ```{r}
 psych::alpha(scale_df2[, c("A1", "A2", "A3", "A4")], check.keys=TRUE)
@@ -171,7 +162,7 @@ psych::alpha(scale_df2[, c("A1", "A2", "A3", "A4")], check.keys=TRUE)
 
 We get a (raw_alpha) value of 0.76 in our data. 
 
-##### 5e.	Create a new scale which is the average of your likert-style variables. 
+##### Creating a new scale which is the average of your likert-style variables. 
 
 ```{r}
 library(car)
@@ -183,7 +174,7 @@ scale_df2$scale = rowMeans(scale_df2[, c("A1", "A2", "A3", "A4")], na.rm=TRUE)
 tail(scale_df2, 50)
 ```
 
-##### 5f. Plot a histogram for each of your likert-style variables, and a histogram for your new scale (the average of your likert-style variables). Include these histograms in your lab pdf write-up, and briefly discuss and interpret any notable differences between the individual histograms and the histogram of your new scale.  
+#####  Plotting a histogram for each of your likert-style variables, and a histogram for your new scale (the average of your likert-style variables). Include these histograms in your lab pdf write-up, and briefly discuss and interpret any notable differences between the individual histograms and the histogram of your new scale.  
 
 ```{r}
 hist(scale_df2$A1)
